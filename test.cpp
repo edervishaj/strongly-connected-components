@@ -15,7 +15,7 @@ using namespace std;
 int main(){
 	clock_t start = clock();
 
-	DirectedGraph g = gen_rand_graph(5, 0.5);
+	DirectedGraph g = gen_rand_graph(50, 0.1);
 
 	clock_t end = clock();
 
