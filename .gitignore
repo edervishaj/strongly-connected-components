@@ -1,3 +1,14 @@
+# Debug folder
+Debug/
+
+# Eclipse specific files
+.cproject
+.project
+.settings
+
+# MacOS specific files
+.DS_Store
+
 # Prerequisites
 *.d
 

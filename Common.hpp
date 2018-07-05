@@ -10,14 +10,12 @@
 
 #include <string>
 #include <boost/graph/adjacency_list.hpp>
-using namespace boost;
+
+typedef boost::adjacency_list<boost::listS, boost::vecS, boost::directedS> DirectedGraph;
 
 /**
- * n_nodes: number of nodes of the graph
- * edge_prob: probability of an edge being present between any pair of nodes
- *
- * return: adjacency_list object representing a graph
+ * Generates random graph G(n,p) through Erdős-Rényi model
  */
-void gen_graph(int n_nodes, float edge_prob);
+DirectedGraph gen_rand_graph(int n_vertices, float edge_prob);
 
 #endif /* COMMON_HPP_ */
