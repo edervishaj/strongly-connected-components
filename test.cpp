@@ -25,7 +25,7 @@ int main(){
 
 	cout << "Time elapsed: " << double(end - start) / CLOCKS_PER_SEC << " seconds" << endl << endl;
 
-	boost::print_graph(g.g);
+	boost::print_graph(g);
 
 //	outfile.close();
 

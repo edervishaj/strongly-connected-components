@@ -1,5 +1,5 @@
 /*
- * Common.cpp
+ * SCC.cpp
  *
  * Author: Ervin Dervishaj
  * Email: vindervishaj@gmail.com
@@ -25,41 +25,70 @@ DirectedGraph gen_rand_graph(int n_vertices, float edge_prob, int seed){
 	// Insert the vertices in the graph
 	for(int i = 0; i < n_vertices; i++){
 		Vertex u = {i, false};
-		g.vertices.push_back(i);
-		boost::add_vertex(u, g.g);
+		boost::add_vertex(u, g);
 	}
 
 	// For each pair of vertices, add edge with probability edge_prob
 	for(int i = 0; i < n_vertices; i++){
-		vertex_t u = boost::vertex(i, g.g);
+		vertex_t u = boost::vertex(i, g);
 		for(int j = 0; j < n_vertices; j++){
-			vertex_t v = boost::vertex(j, g.g);
+			vertex_t v = boost::vertex(j, g);
 			if(distribution(eng) < edge_prob)
-				boost::add_edge(u, v, g.g);
+				boost::add_edge(u, v, g);
 		}
 	}
 
 	return g;
 }
 
+void visit(std::vector<DirectedGraph>& scc, std::stack<int>& stack, DirectedGraph& g, vertex_t v){
+	boost::adjacency_list<>::edge_iterator e, eend;
+
+	std::vector<vertex_t> root(num_vertices(g));
+	std::vector<bool> inComponent(num_vertices(g));
+
+	int v_id = g[v].index;
+
+	root[v_id] = v_id;
+	inComponent[v_id] = false;
+	stack.push(v_id);
+
+	for(boost::tie(e, eend) = out_edges(v, g); e != eend; ++e){
+		vertex_t w = boost::target(*e, g);
+		if(g[w].visited == false)
+			visit(scc, stack, g, w);
+		int w_id = g[w].index;
+		if(!inComponent[w_id])
+			root[w_id] = (root[v_id] <= root[w_id]) ? root[v_id] : root[w_id];
+	}
+
+	if(root[v_id] == v_id){
+		DirectedGraph h;
+		int w_id;
+		do{
+			w_id = stack.top();
+			stack.pop();
+			inComponent[w_id] = true;
+			Vertex w = {w_id, false};
+			boost::add_vertex(w, g);
+		}while(w_id != v_id);
+
+		scc.push_back(h);
+	}
+}
+
 std::vector<DirectedGraph> tarjan_scc(DirectedGraph g){
 	// Vector of SCC to be returned by the algorithm
 	std::vector<DirectedGraph> scc;
 
+	std::stack<int> stack;
+
 	boost::adjacency_list<>::vertex_iterator v, vend;
 
 	// Go over all vertices
-	for(int i = 0, boost::tie(v, vend) = vertices(g.g); v != vend; ++v, ++i){
-////		std::cout << g[*v].index << "\t" << g[*v].visited << std::endl;
-//		if(g.g[*v].visited == false){
-//			visit(g, i);
-//		}
-	}
+	for(boost::tie(v, vend) = vertices(g); v != vend; ++v)
+		if(g[*v].visited == false)
+			visit(&scc, &stack, &g, *v);
+
 	return scc;
-}
-
-void visit(DirectedGraph g, int idx){
-	std::vector<vertex_t> root(g.vertices.size());
-	std::stack<vertex_t> stack;
-
 }

@@ -1,5 +1,5 @@
 /*
- * Common.hpp
+ * SCC.hpp
  *
  * Author: Ervin Dervishaj
  * Email: vindervishaj@gmail.com
@@ -12,14 +12,9 @@
 
 
 
-struct Vertex { int index; bool visited; int inComponent; };
-typedef boost::adjacency_list<boost::listS, boost::vecS, boost::directedS, Vertex> Graph;
-typedef boost::graph_traits<Graph>::vertex_descriptor vertex_t;
-
-struct DirectedGraph{
-	Graph g;
-	std::vector<int> vertices;
-};
+struct Vertex { int index; bool visited; };
+typedef boost::adjacency_list<boost::listS, boost::vecS, boost::directedS, Vertex> DirectedGraph;
+typedef boost::graph_traits<DirectedGraph>::vertex_descriptor vertex_t;
 
 /* Generates random graph G(n,p) through Erdős-Rényi model */
 DirectedGraph gen_rand_graph(int n_vertices, float edge_prob, int seed);
