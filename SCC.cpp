@@ -25,6 +25,25 @@ void print(std::stack<int> &s){
     std::cout << x << " ";
 }
 
+void print_graph(const DiGraph& g){
+	DiGraph::vertex_iterator v, vend;
+	DiGraph::out_edge_iterator e, eend;
+
+	// Go over each vertex
+	for(boost::tie(v, vend) = vertices(g); v != vend; ++v){
+		std::cout << g[*v].index << " --> ";
+		for(boost::tie(e, eend) = out_edges(*v, g); e != eend; ++e) {
+			vertex_t w = boost::target(*e, g);
+			std::cout << g[w].index << " ";
+		}
+		std::cout << std::endl;
+	}
+}
+
+void print_graph_json(const DiGraph& g, std::string filename){
+
+}
+
 DiGraph gen_rand_graph(int n_vertices, float edge_prob, int seed){
 	// Initialize seed for reproducibility
 	std::mt19937 eng(seed);
@@ -37,7 +56,7 @@ DiGraph gen_rand_graph(int n_vertices, float edge_prob, int seed){
 
 	// Insert the vertices in the graph
 	for(int i = 0; i < n_vertices; i++){
-		Vertex u = {i, false};
+		Vertex u = {i, false, n_vertices + 1, false};
 		boost::add_vertex(u, g);
 	}
 
@@ -55,42 +74,45 @@ DiGraph gen_rand_graph(int n_vertices, float edge_prob, int seed){
 }
 
 /* Main loop of Tarjan Algorithm */
-void visit(std::vector<DiGraph>& scc, std::stack<int>& stack, DiGraph& g, vertex_t v){
+void visit(std::vector<DiGraph>& scc, std::stack<vertex_t>& stack, DiGraph& g, vertex_t v){
 	g[v].visited = true;
+
+//	std::vector<vertex_t> root;
+//	std::vector<bool> inComponent(num_vertices(g), false);
 
 	// Auxiliary edge_iterator variables
 	DiGraph::out_edge_iterator e, eend;
 
-	std::vector<vertex_t> root(num_vertices(g));
-	std::vector<bool> inComponent(num_vertices(g));
+//	int v_id = g[v].index;
 
-	int v_id = g[v].index;
-
-	root[v_id] = v_id;
-	inComponent[v_id] = false;
-	stack.push(v_id);
+	g[v].root = g[v].index;
+	g[v].inComponent = false;
+	stack.push(v);
 
 	// Go over all neighbors of v
 	for(boost::tie(e, eend) = out_edges(v, g); e != eend; ++e){
 		vertex_t w = boost::target(*e, g);
+//		int w_id = g[w].index;
+
 		if(!g[w].visited)
 			visit(scc, stack, g, w);
-		int w_id = g[w].index;
-		if(!inComponent[w_id])
-			root[v_id] = (root[v_id] <= root[w_id]) ? root[v_id] : root[w_id];
+
+		if(!g[w].inComponent)
+			g[v].root = (g[v].root <= g[w].root) ? g[v].root : g[w].root;
 	}
 
 	// Component identified, store in vector scc
-	if(root[v_id] == v_id){
+	if(g[v].root == g[v].index){
 		DiGraph h;
-		int w_id;
-		do{
-			w_id = stack.top();
+		int w_id = -1;
+		while(w_id != g[v].index){
+			vertex_t w = stack.top();
 			stack.pop();
-			inComponent[w_id] = true;
-			Vertex w = {w_id, false};
-			boost::add_vertex(w, h);
-		}while(w_id != v_id);
+			g[w].inComponent = true;
+			g[w].root = g[v].index;
+			boost::add_vertex({g[w].index, g[w].visited, g[w].root, g[w].inComponent}, h);
+			w_id = g[w].index;
+		}
 
 		// Construct the graph of the component
 		scc.push_back(h);
@@ -100,13 +122,13 @@ void visit(std::vector<DiGraph>& scc, std::stack<int>& stack, DiGraph& g, vertex
 std::vector<DiGraph> tarjan_scc(DiGraph g){
 	// Vector of SCC to be returned by the algorithm
 	std::vector<DiGraph> scc;
-	std::stack<int> stack;
+	std::stack<vertex_t> stack;
 
-	boost::adjacency_list<>::vertex_iterator v, vend;
+	DiGraph::vertex_iterator v, vend;
 
 	// Go over all vertices
 	for(boost::tie(v, vend) = vertices(g); v != vend; ++v) {
-		if (g[*v].visited == false) {
+		if(!g[*v].visited) {
 			visit(scc, stack, g, *v);
 		}
 	}
