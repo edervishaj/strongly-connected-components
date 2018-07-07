@@ -19,7 +19,7 @@ int main(){
 
 	clock_t start = clock();
 
-	DirectedGraph g = gen_rand_graph(5, 0.5, 149);
+	DirectedGraph g = gen_rand_graph(5, 0.5, 150);
 
 	clock_t end = clock();
 
@@ -29,5 +29,7 @@ int main(){
 
 //	outfile.close();
 
-//	tarjan_scc(g);
+	vector<DirectedGraph> scc = tarjan_scc(g);
+	cout << scc.size() << endl;
+//	boost::print_graph(scc[0]);
 }

@@ -12,6 +12,20 @@
 #include <stack>
 #include <iostream>
 
+void print(std::stack<int> &s)
+{
+    if(s.empty())
+    {
+        std::cout << std::endl;
+        return;
+    }
+    int x = s.top();
+    s.pop();
+    print(s);
+    s.push(x);
+    std::cout << x << " ";
+}
+
 DirectedGraph gen_rand_graph(int n_vertices, float edge_prob, int seed){
 	// Initialize seed for reproducibility
 	std::mt19937 eng(seed);
@@ -41,8 +55,11 @@ DirectedGraph gen_rand_graph(int n_vertices, float edge_prob, int seed){
 	return g;
 }
 
+/* Main loop of Tarjan Algorithm */
 void visit(std::vector<DirectedGraph>& scc, std::stack<int>& stack, DirectedGraph& g, vertex_t v){
-	boost::adjacency_list<>::edge_iterator e, eend;
+
+	// Auxiliary edge_iterator variables
+	DirectedGraph::out_edge_iterator e, eend;
 
 	std::vector<vertex_t> root(num_vertices(g));
 	std::vector<bool> inComponent(num_vertices(g));
@@ -53,6 +70,7 @@ void visit(std::vector<DirectedGraph>& scc, std::stack<int>& stack, DirectedGrap
 	inComponent[v_id] = false;
 	stack.push(v_id);
 
+	// Go over all neighbors of v
 	for(boost::tie(e, eend) = out_edges(v, g); e != eend; ++e){
 		vertex_t w = boost::target(*e, g);
 		if(g[w].visited == false)
@@ -62,6 +80,7 @@ void visit(std::vector<DirectedGraph>& scc, std::stack<int>& stack, DirectedGrap
 			root[w_id] = (root[v_id] <= root[w_id]) ? root[v_id] : root[w_id];
 	}
 
+	// Component identified, store in vector scc
 	if(root[v_id] == v_id){
 		DirectedGraph h;
 		int w_id;
@@ -80,7 +99,6 @@ void visit(std::vector<DirectedGraph>& scc, std::stack<int>& stack, DirectedGrap
 std::vector<DirectedGraph> tarjan_scc(DirectedGraph g){
 	// Vector of SCC to be returned by the algorithm
 	std::vector<DirectedGraph> scc;
-
 	std::stack<int> stack;
 
 	boost::adjacency_list<>::vertex_iterator v, vend;
@@ -88,7 +106,7 @@ std::vector<DirectedGraph> tarjan_scc(DirectedGraph g){
 	// Go over all vertices
 	for(boost::tie(v, vend) = vertices(g); v != vend; ++v)
 		if(g[*v].visited == false)
-			visit(&scc, &stack, &g, *v);
+			visit(scc, stack, g, *v);
 
 	return scc;
 }
