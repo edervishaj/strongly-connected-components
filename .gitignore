@@ -1,10 +1,14 @@
 # Debug folder
 Debug/
+cmake-build-debug/
 
 # Eclipse specific files
 .cproject
 .project
 .settings
+
+# CLion specific files
+.idea
 
 # MacOS specific files
 .DS_Store

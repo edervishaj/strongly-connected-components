@@ -30,6 +30,9 @@ int main(){
 //	outfile.close();
 
 	vector<DirectedGraph> scc = tarjan_scc(g);
-	cout << scc.size() << endl;
-//	boost::print_graph(scc[0]);
+
+	cout << "Number of found components: " << scc.size() << endl;
+
+	cout << "Graph of found component:" << endl;
+	boost::print_graph(scc[scc.size()-1]);
 }

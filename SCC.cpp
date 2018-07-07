@@ -12,8 +12,7 @@
 #include <stack>
 #include <iostream>
 
-void print(std::stack<int> &s)
-{
+void print(std::stack<int> &s){
     if(s.empty())
     {
         std::cout << std::endl;
@@ -57,6 +56,7 @@ DirectedGraph gen_rand_graph(int n_vertices, float edge_prob, int seed){
 
 /* Main loop of Tarjan Algorithm */
 void visit(std::vector<DirectedGraph>& scc, std::stack<int>& stack, DirectedGraph& g, vertex_t v){
+	g[v].visited = true;
 
 	// Auxiliary edge_iterator variables
 	DirectedGraph::out_edge_iterator e, eend;
@@ -73,11 +73,11 @@ void visit(std::vector<DirectedGraph>& scc, std::stack<int>& stack, DirectedGrap
 	// Go over all neighbors of v
 	for(boost::tie(e, eend) = out_edges(v, g); e != eend; ++e){
 		vertex_t w = boost::target(*e, g);
-		if(g[w].visited == false)
+		if(!g[w].visited)
 			visit(scc, stack, g, w);
 		int w_id = g[w].index;
 		if(!inComponent[w_id])
-			root[w_id] = (root[v_id] <= root[w_id]) ? root[v_id] : root[w_id];
+			root[v_id] = (root[v_id] <= root[w_id]) ? root[v_id] : root[w_id];
 	}
 
 	// Component identified, store in vector scc
@@ -89,8 +89,10 @@ void visit(std::vector<DirectedGraph>& scc, std::stack<int>& stack, DirectedGrap
 			stack.pop();
 			inComponent[w_id] = true;
 			Vertex w = {w_id, false};
-			boost::add_vertex(w, g);
+			boost::add_vertex(w, h);
 		}while(w_id != v_id);
+
+		// Construct the graph of the compo
 
 		scc.push_back(h);
 	}
@@ -104,9 +106,11 @@ std::vector<DirectedGraph> tarjan_scc(DirectedGraph g){
 	boost::adjacency_list<>::vertex_iterator v, vend;
 
 	// Go over all vertices
-	for(boost::tie(v, vend) = vertices(g); v != vend; ++v)
-		if(g[*v].visited == false)
+	for(boost::tie(v, vend) = vertices(g); v != vend; ++v) {
+		if (g[*v].visited == false) {
 			visit(scc, stack, g, *v);
+		}
+	}
 
 	return scc;
 }
