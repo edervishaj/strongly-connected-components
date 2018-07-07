@@ -25,15 +25,15 @@ void print(std::stack<int> &s){
     std::cout << x << " ";
 }
 
-DirectedGraph gen_rand_graph(int n_vertices, float edge_prob, int seed){
+DiGraph gen_rand_graph(int n_vertices, float edge_prob, int seed){
 	// Initialize seed for reproducibility
 	std::mt19937 eng(seed);
 
 	// Initialize uniform distribution number generator
 	std::uniform_real_distribution<float> distribution(0.0, 1.0);
 
-	// Initialize DirectedGraph object
-	DirectedGraph g;
+	// Initialize DiGraph object
+	DiGraph g;
 
 	// Insert the vertices in the graph
 	for(int i = 0; i < n_vertices; i++){
@@ -55,11 +55,11 @@ DirectedGraph gen_rand_graph(int n_vertices, float edge_prob, int seed){
 }
 
 /* Main loop of Tarjan Algorithm */
-void visit(std::vector<DirectedGraph>& scc, std::stack<int>& stack, DirectedGraph& g, vertex_t v){
+void visit(std::vector<DiGraph>& scc, std::stack<int>& stack, DiGraph& g, vertex_t v){
 	g[v].visited = true;
 
 	// Auxiliary edge_iterator variables
-	DirectedGraph::out_edge_iterator e, eend;
+	DiGraph::out_edge_iterator e, eend;
 
 	std::vector<vertex_t> root(num_vertices(g));
 	std::vector<bool> inComponent(num_vertices(g));
@@ -82,7 +82,7 @@ void visit(std::vector<DirectedGraph>& scc, std::stack<int>& stack, DirectedGrap
 
 	// Component identified, store in vector scc
 	if(root[v_id] == v_id){
-		DirectedGraph h;
+		DiGraph h;
 		int w_id;
 		do{
 			w_id = stack.top();
@@ -92,15 +92,14 @@ void visit(std::vector<DirectedGraph>& scc, std::stack<int>& stack, DirectedGrap
 			boost::add_vertex(w, h);
 		}while(w_id != v_id);
 
-		// Construct the graph of the compo
-
+		// Construct the graph of the component
 		scc.push_back(h);
 	}
 }
 
-std::vector<DirectedGraph> tarjan_scc(DirectedGraph g){
+std::vector<DiGraph> tarjan_scc(DiGraph g){
 	// Vector of SCC to be returned by the algorithm
-	std::vector<DirectedGraph> scc;
+	std::vector<DiGraph> scc;
 	std::stack<int> stack;
 
 	boost::adjacency_list<>::vertex_iterator v, vend;

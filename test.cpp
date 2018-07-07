@@ -14,25 +14,27 @@
 using namespace std;
 
 int main(){
-//	ofstream outfile;
-//	outfile.open("graph.txt", ofstream::out);
 
 	clock_t start = clock();
 
-	DirectedGraph g = gen_rand_graph(5, 0.5, 150);
+	DiGraph g = gen_rand_graph(5, 0.5, 150);
 
 	clock_t end = clock();
 
-	cout << "Time elapsed: " << double(end - start) / CLOCKS_PER_SEC << " seconds" << endl << endl;
-
 	boost::print_graph(g);
 
-//	outfile.close();
+	cout << "Time to create random graph: " << double(end - start) / CLOCKS_PER_SEC << " seconds" << endl << endl;
 
-	vector<DirectedGraph> scc = tarjan_scc(g);
+	start = clock();
 
-	cout << "Number of found components: " << scc.size() << endl;
+	vector<DiGraph> scc = tarjan_scc(g);
 
-	cout << "Graph of found component:" << endl;
-	boost::print_graph(scc[scc.size()-1]);
+	end = clock();
+
+	cout << "Components: " << scc.size() << ". Time: " << double(end - start) / CLOCKS_PER_SEC << " seconds" << endl;
+
+	vector<DiGraph>::iterator it;
+
+	for(it = scc.begin(); it != scc.end(); ++it)
+		boost::print_graph(*it);
 }
