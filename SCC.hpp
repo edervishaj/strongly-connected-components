@@ -22,6 +22,12 @@ DiGraph gen_rand_graph(int n_vertices, float edge_prob, int seed);
 /* Tarjan algorithm -- returns vector containing the SCCs */
 std::vector<DiGraph> tarjan_scc(DiGraph g);
 
+/* Nuutila algorithm 1 -- returns vector containing the SCCs */
+std::vector<DiGraph> nuutila1_scc(DiGraph g);
+
+/* Nuutila algorithm 2 -- returns vector containing the SCCs */
+std::vector<DiGraph> nuutila2_scc(DiGraph g);
+
 /* Prints a DiGraph */
 void print_graph(const DiGraph& g);
 

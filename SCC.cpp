@@ -25,6 +25,7 @@ void print(std::stack<int> &s){
     std::cout << x << " ";
 }
 
+/* Print one row for each vertex in the format v --> u1 u2 u3 */
 void print_graph(const DiGraph& g){
 	DiGraph::vertex_iterator v, vend;
 	DiGraph::out_edge_iterator e, eend;
@@ -40,6 +41,7 @@ void print_graph(const DiGraph& g){
 	}
 }
 
+/* Print the graph in json format to be used by sigmajs*/
 void print_graph_json(const DiGraph& g, std::string filename){
 
 }
@@ -77,13 +79,8 @@ DiGraph gen_rand_graph(int n_vertices, float edge_prob, int seed){
 void visit(std::vector<DiGraph>& scc, std::stack<vertex_t>& stack, DiGraph& g, vertex_t v){
 	g[v].visited = true;
 
-//	std::vector<vertex_t> root;
-//	std::vector<bool> inComponent(num_vertices(g), false);
-
 	// Auxiliary edge_iterator variables
 	DiGraph::out_edge_iterator e, eend;
-
-//	int v_id = g[v].index;
 
 	g[v].root = g[v].index;
 	g[v].inComponent = false;
@@ -92,7 +89,6 @@ void visit(std::vector<DiGraph>& scc, std::stack<vertex_t>& stack, DiGraph& g, v
 	// Go over all neighbors of v
 	for(boost::tie(e, eend) = out_edges(v, g); e != eend; ++e){
 		vertex_t w = boost::target(*e, g);
-//		int w_id = g[w].index;
 
 		if(!g[w].visited)
 			visit(scc, stack, g, w);
