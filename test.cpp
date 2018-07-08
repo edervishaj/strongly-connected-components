@@ -9,11 +9,14 @@
 #include <ctime>
 #include <iostream>
 #include <fstream>
-#include <boost/graph/graph_utility.hpp>
 #include "SCC.hpp"
 using namespace std;
 
 int main(){
+
+	fstream f;
+
+	f.open("../graph.txt", ios_base::out);
 
 	clock_t start = clock();
 
@@ -31,7 +34,7 @@ int main(){
 
 	clock_t end = clock();
 
-	print_graph(g);
+	print_graph(g, f);
 
 	cout << "Time to create random graph: " << double(end - start) / CLOCKS_PER_SEC << " seconds" << endl << endl;
 
@@ -47,8 +50,11 @@ int main(){
 	int i;
 
 	for(i = 0, it = scc.begin(); it != scc.end(); ++it, ++i) {
-		cout << "Component: " << i << endl;
-		print_graph(*it);
-		cout << endl << endl;
+		f << endl << endl << "Component: " << i << endl;
+		print_graph(*it, f);
 	}
+
+	f.close();
+
+	return 0;
 }

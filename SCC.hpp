@@ -29,7 +29,7 @@ std::vector<DiGraph> nuutila1_scc(DiGraph g);
 std::vector<DiGraph> nuutila2_scc(DiGraph g);
 
 /* Prints a DiGraph */
-void print_graph(const DiGraph& g);
+void print_graph(const DiGraph& g, std::ostream& os);
 
 
 

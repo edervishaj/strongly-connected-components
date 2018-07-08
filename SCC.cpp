@@ -11,8 +11,9 @@
 #include <vector>
 #include <stack>
 #include <iostream>
+#include <ostream>
 
-void print(std::stack<int> &s){
+void print_stack(std::stack<int> &s){
     if(s.empty())
     {
         std::cout << std::endl;
@@ -20,24 +21,24 @@ void print(std::stack<int> &s){
     }
     int x = s.top();
     s.pop();
-    print(s);
+    print_stack(s);
     s.push(x);
     std::cout << x << " ";
 }
 
 /* Print one row for each vertex in the format v --> u1 u2 u3 */
-void print_graph(const DiGraph& g){
+void print_graph(const DiGraph& g, std::ostream& os=std::cout){
 	DiGraph::vertex_iterator v, vend;
 	DiGraph::out_edge_iterator e, eend;
 
 	// Go over each vertex
 	for(boost::tie(v, vend) = vertices(g); v != vend; ++v){
-		std::cout << g[*v].index << " --> ";
+		os << g[*v].index << " --> ";
 		for(boost::tie(e, eend) = out_edges(*v, g); e != eend; ++e) {
 			vertex_t w = boost::target(*e, g);
-			std::cout << g[w].index << " ";
+			os << g[w].index << " ";
 		}
-		std::cout << std::endl;
+		os << std::endl;
 	}
 }
 
