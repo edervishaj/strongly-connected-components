@@ -10,7 +10,7 @@
 
 #include <boost/graph/adjacency_list.hpp>
 
-struct Vertex { int index; bool visited; int root; bool inComponent; };
+struct Vertex { int index; bool visited; };
 typedef boost::adjacency_list<boost::listS, boost::vecS, boost::directedS, Vertex> DiGraph;
 typedef boost::graph_traits<DiGraph>::vertex_descriptor vertex_t;
 

@@ -23,10 +23,10 @@ int main(){
 //	DiGraph g = gen_rand_graph(5, 0.5, 150);
 
     DiGraph g;
-	vertex_t _0 = add_vertex({0, false, 0, false}, g);
-	vertex_t _1 = add_vertex({1, false, 0, false}, g);
-	vertex_t _2 = add_vertex({2, false, 0, false}, g);
-	vertex_t _3 = add_vertex({3, false, 0, false}, g);
+	vertex_t _0 = add_vertex({0, false}, g);
+	vertex_t _1 = add_vertex({1, false}, g);
+	vertex_t _2 = add_vertex({2, false}, g);
+	vertex_t _3 = add_vertex({3, false}, g);
 
 	//add_edge(_0, _1, g);
 	add_edge(_1, _2, g);
