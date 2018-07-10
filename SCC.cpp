@@ -42,7 +42,7 @@ void print_graph(const DiGraph& g, std::ostream& os=std::cout){
 	}
 }
 
-/* Print the graph in json format to be used by sigmajs*/
+/* Print the graph in json format to be used by sigmajs */
 void print_graph_json(const DiGraph& g, std::string filename){
 
 }
@@ -131,4 +131,63 @@ std::vector<DiGraph> tarjan_scc(DiGraph g){
 	}
 
 	return scc;
+}
+
+/* Main loop of Nuutila first improvement */
+void visit1(std::vector<DiGraph>& scc, std::stack<vertex_t>& stack, DiGraph& g, vertex_t v){
+    g[v].visited = true;
+
+    // Auxiliary edge_iterator variables
+    DiGraph::out_edge_iterator e, eend;
+
+    g[v].root = g[v].index;
+    g[v].inComponent = false;
+
+    // Go over all neighbors of v
+    for(boost::tie(e, eend) = out_edges(v, g); e != eend; ++e){
+        vertex_t w = boost::target(*e, g);
+
+        if(!g[w].visited)
+            visit1(scc, stack, g, w);
+
+        if(!g[w].inComponent)
+            g[v].root = (g[v].root <= g[w].root) ? g[v].root : g[w].root;
+    }
+
+    // Component identified, store in vector scc
+    if(g[v].root == g[v].index){
+        DiGraph h;
+
+        g[v].inComponent = true;
+
+        boost::add_vertex({g[v].index, g[v].visited, g[v].root, g[v].inComponent}, h);
+
+        while(stack.size() > 0 && g[stack.top()].index > g[v].index){
+            vertex_t w = stack.top();
+            stack.pop();
+            g[w].inComponent = true;
+            boost::add_vertex({g[w].index, g[w].visited, g[w].root, g[w].inComponent}, h);
+        }
+
+        // Construct the graph of the component
+        scc.push_back(h);
+
+    } else stack.push(v);
+}
+
+std::vector<DiGraph> nuutila1_scc(DiGraph g){
+    // Vector of SCC to be returned by the algorithm
+    std::vector<DiGraph> scc;
+    std::stack<vertex_t> stack;
+
+    DiGraph::vertex_iterator v, vend;
+
+    // Go over all vertices
+    for(boost::tie(v, vend) = vertices(g); v != vend; ++v) {
+        if(!g[*v].visited) {
+            visit1(scc, stack, g, *v);
+        }
+    }
+
+    return scc;
 }

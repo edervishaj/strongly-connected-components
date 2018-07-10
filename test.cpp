@@ -20,27 +20,28 @@ int main(){
 
 	clock_t start = clock();
 
-	DiGraph g = gen_rand_graph(5, 0.5, 150);
+//	DiGraph g = gen_rand_graph(5, 0.5, 150);
 
-//	vertex_t _0 = add_vertex({0, false}, g);
-//	vertex_t _1 = add_vertex({1, false}, g);
-//	vertex_t _2 = add_vertex({2, false}, g);
-//	vertex_t _3 = add_vertex({3, false}, g);
-//
-//	add_edge(_0, _1, g);
-//	add_edge(_1, _2, g);
-//	add_edge(_2, _3, g);
-//	add_edge(_3, _1, g);
+    DiGraph g;
+	vertex_t _0 = add_vertex({0, false, 0, false}, g);
+	vertex_t _1 = add_vertex({1, false, 0, false}, g);
+	vertex_t _2 = add_vertex({2, false, 0, false}, g);
+	vertex_t _3 = add_vertex({3, false, 0, false}, g);
+
+	//add_edge(_0, _1, g);
+	add_edge(_1, _2, g);
+	add_edge(_2, _3, g);
+	add_edge(_3, _1, g);
 
 	clock_t end = clock();
 
-	print_graph(g, f);
+	print_graph(g, cout);
 
 	cout << "Time to create random graph: " << double(end - start) / CLOCKS_PER_SEC << " seconds" << endl << endl;
 
 	start = clock();
 
-	vector<DiGraph> scc = tarjan_scc(g);
+	vector<DiGraph> scc = nuutila1_scc(g);
 
 	end = clock();
 
@@ -50,8 +51,9 @@ int main(){
 	int i;
 
 	for(i = 0, it = scc.begin(); it != scc.end(); ++it, ++i) {
-		f << endl << endl << "Component: " << i << endl;
-		print_graph(*it, f);
+		cout << "Component: " << i << endl;
+		print_graph(*it, cout);
+		cout << endl;
 	}
 
 	f.close();
