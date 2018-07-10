@@ -12,42 +12,25 @@
 #include <stack>
 #include <iostream>
 #include <ostream>
+#include <algorithm>
 
-void print_stack(std::stack<int> &s){
-    if(s.empty())
-    {
-        std::cout << std::endl;
-        return;
-    }
-    int x = s.top();
-    s.pop();
-    print_stack(s);
-    s.push(x);
-    std::cout << x << " ";
-}
-
-/* Print one row for each vertex in the format v --> u1 u2 u3 */
+/* Print one row for each vertex_t in the format v --> u1 u2 u3 */
 void print_graph(const DiGraph& g, std::ostream& os=std::cout){
 	DiGraph::vertex_iterator v, vend;
 	DiGraph::out_edge_iterator e, eend;
 
-	// Go over each vertex
+	// Go over each vertex_t
 	for(boost::tie(v, vend) = vertices(g); v != vend; ++v){
 		os << g[*v].index << " --> ";
 		for(boost::tie(e, eend) = out_edges(*v, g); e != eend; ++e) {
-			vertex w = boost::target(*e, g);
+			vertex_t w = boost::target(*e, g);
 			os << g[w].index << " ";
 		}
 		os << std::endl;
 	}
 }
 
-/* Print the graph in json format to be used by sigmajs */
-void print_graph_json(const DiGraph& g, std::string filename){
-
-}
-
-DiGraph gen_rand_graph(int n_vertices, float edge_prob, int seed){
+DiGraph rand_graph(int n_vertices, float edge_prob, int seed){
 	// Initialize seed for reproducibility
 	std::mt19937 eng(seed);
 
@@ -65,9 +48,9 @@ DiGraph gen_rand_graph(int n_vertices, float edge_prob, int seed){
 
 	// For each pair of vertices, add edge with probability edge_prob
 	for(int i = 0; i < n_vertices; i++){
-		vertex u = boost::vertex(i, g);
+		vertex_t u = boost::vertex(i, g);
 		for(int j = 0; j < n_vertices; j++){
-			vertex v = boost::vertex(j, g);
+			vertex_t v = boost::vertex(j, g);
 			if(distribution(eng) < edge_prob)
 				boost::add_edge(u, v, g);
 		}
@@ -77,11 +60,11 @@ DiGraph gen_rand_graph(int n_vertices, float edge_prob, int seed){
 }
 
 /* Main loop of Tarjan Algorithm */
-void visit(std::vector<DiGraph>& scc, std::stack<vertex>& stack, std::vector<bool>& inComponent, std::vector<int>& root, DiGraph& g, vertex v){
-	g[v].visited = true;
+void visit(std::vector<DiGraph>& scc, std::stack<vertex_t>& stack, std::vector<bool>& inComponent, std::vector<int>& root, DiGraph& g, vertex_t v){
+    // Auxiliary edge_iterator variables
+    DiGraph::out_edge_iterator e, eend;
 
-	// Auxiliary edge_iterator variables
-	DiGraph::out_edge_iterator e, eend;
+	g[v].visited = true;
 
 	int v_idx = g[v].index;
 
@@ -90,7 +73,7 @@ void visit(std::vector<DiGraph>& scc, std::stack<vertex>& stack, std::vector<boo
 
 	// Go over all neighbors of v
 	for(boost::tie(e, eend) = out_edges(v, g); e != eend; ++e){
-		vertex w = boost::target(*e, g);
+		vertex_t w = boost::target(*e, g);
 		int w_idx = g[w].index;
 
 		if(!g[w].visited)
@@ -105,7 +88,7 @@ void visit(std::vector<DiGraph>& scc, std::stack<vertex>& stack, std::vector<boo
 		DiGraph h;
 		int w_id = -1;
 		while(w_id != g[v].index){
-			vertex w = stack.top();
+			vertex_t w = stack.top();
 			stack.pop();
 			w_id = g[w].index;
 			inComponent[w_id] = true;
@@ -126,7 +109,7 @@ std::vector<DiGraph> tarjan_scc(DiGraph g){
 	std::vector<DiGraph> scc;
 
 	// DS used by Tarjan
-	std::stack<vertex> stack;
+	std::stack<vertex_t> stack;
 	std::vector<bool> inComponent(num_vertices, false);
 	std::vector<int> root(num_vertices, num_vertices + 1);
 
@@ -143,11 +126,11 @@ std::vector<DiGraph> tarjan_scc(DiGraph g){
 }
 
 /* Main loop of Nuutila first improvement */
-void visit1(std::vector<DiGraph>& scc, std::stack<vertex>& stack, std::vector<bool>& inComponent, std::vector<int>& root, DiGraph& g, vertex v){
-    g[v].visited = true;
-
+void visit1(std::vector<DiGraph>& scc, std::stack<vertex_t>& stack, std::vector<bool>& inComponent, std::vector<int>& root, DiGraph& g, vertex_t v){
     // Auxiliary edge_iterator variables
     DiGraph::out_edge_iterator e, eend;
+
+    g[v].visited = true;
 
     int v_idx = g[v].index;
 
@@ -155,7 +138,7 @@ void visit1(std::vector<DiGraph>& scc, std::stack<vertex>& stack, std::vector<bo
 
     // Go over all neighbors of v
     for(boost::tie(e, eend) = out_edges(v, g); e != eend; ++e){
-        vertex w = boost::target(*e, g);
+        vertex_t w = boost::target(*e, g);
         int w_idx = g[w].index;
 
         if(!g[w].visited)
@@ -174,7 +157,7 @@ void visit1(std::vector<DiGraph>& scc, std::stack<vertex>& stack, std::vector<bo
         boost::add_vertex({v_idx, g[v].visited}, h);
 
         while(stack.size() > 0 && g[stack.top()].index > v_idx){
-            vertex w = stack.top();
+            vertex_t w = stack.top();
             int w_idx = g[w].index;
             stack.pop();
             inComponent[w_idx] = true;
@@ -195,7 +178,7 @@ std::vector<DiGraph> nuutila1_scc(DiGraph g){
 	std::vector<DiGraph> scc;
 
 	// DS used by Tarjan
-	std::stack<vertex> stack;
+	std::stack<vertex_t> stack;
 	std::vector<bool> inComponent(num_vertices, false);
 	std::vector<int> root(num_vertices, num_vertices + 1);
 
@@ -211,6 +194,76 @@ std::vector<DiGraph> nuutila1_scc(DiGraph g){
     return scc;
 }
 
-void visit2(std::vector<DiGraph>& scc, std::stack<vertex>& stack, DiGraph& g, vertex v){
+/* Main loop of Nuutila second improvement */
+void visit2(std::vector<int>& scc, std::vector<int>& stack, std::vector<bool>& inComponent, std::vector<int>& root, DiGraph& g, vertex_t v){
+    // Auxiliary edge_iterator variables
+    DiGraph::out_edge_iterator e, eend;
 
+	g[v].visited = true;
+
+	int v_idx = g[v].index;
+
+	root[v_idx] = v_idx;
+
+    // Go over all neighbors of v
+    for(boost::tie(e, eend) = out_edges(v, g); e != eend; ++e){
+        vertex_t w = boost::target(*e, g);
+        int w_idx = g[w].index;
+
+        if(!g[w].visited)
+            visit2(scc, stack, inComponent, root, g, w);
+
+        if(!inComponent[root[w_idx]])
+            root[v_idx] = (root[v_idx] <= root[w_idx]) ? root[v_idx] : root[w_idx];
+    }
+
+    // Component identified, store in vector scc
+    if(root[v_idx] == v_idx){
+        DiGraph h;
+
+        if(!stack.empty() && stack.back() >= v_idx){
+            while(!stack.empty() && stack.back() >= v_idx){
+                int w_idx = stack.back();
+                stack.pop_back();
+                inComponent[w_idx] = true;
+            }
+        } else {
+            inComponent[v_idx] = true;
+			scc.push_back(v_idx);
+        }
+    } else {
+        if(std::find(stack.begin(), stack.end(), root[v_idx]) == stack.end()) {
+            stack.push_back(root[v_idx]);
+            scc.push_back(root[v_idx]);
+        }
+    }
+}
+
+std::vector<int> nuutila2_scc(DiGraph g){
+	// Number of vertices in g
+	int num_vertices = boost::num_vertices(g);
+
+	// Vector of SCC to be returned by the algorithm
+	std::vector<int> scc;
+
+	// DS used by Tarjan
+	std::vector<int> stack;
+	std::vector<bool> inComponent(num_vertices, false);
+	std::vector<int> root(num_vertices, num_vertices + 1);
+
+	DiGraph::vertex_iterator v, vend;
+
+	stack.push_back(-1);
+
+	if(boost::num_vertices(g) != num_vertices)
+		exit(1);
+
+	// Go over all vertices
+	for(boost::tie(v, vend) = vertices(g); v != vend; ++v) {
+		if(!g[*v].visited) {
+			visit2(scc, stack, inComponent, root, g, *v);
+		}
+	}
+
+	return scc;
 }

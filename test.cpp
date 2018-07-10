@@ -20,18 +20,18 @@ int main(){
 
 	clock_t start = clock();
 
-//	DiGraph g = gen_rand_graph(5, 0.5, 150);
+	DiGraph g = rand_graph(5, 0.5, 150);
 
-    DiGraph g;
-	vertex _0 = add_vertex({0, false}, g);
-	vertex _1 = add_vertex({1, false}, g);
-	vertex _2 = add_vertex({2, false}, g);
-	vertex _3 = add_vertex({3, false}, g);
-
-	//add_edge(_0, _1, g);
-	add_edge(_1, _2, g);
-	add_edge(_2, _3, g);
-	add_edge(_3, _1, g);
+//    DiGraph g;
+//	vertex_t _0 = add_vertex({0, false}, g);
+//	vertex_t _1 = add_vertex({1, false}, g);
+//	vertex_t _2 = add_vertex({2, false}, g);
+//	vertex_t _3 = add_vertex({3, false}, g);
+//
+//	//add_edge(_0, _1, g);
+//	add_edge(_1, _2, g);
+//	add_edge(_2, _3, g);
+//	add_edge(_3, _1, g);
 
 	clock_t end = clock();
 
@@ -41,18 +41,19 @@ int main(){
 
 	start = clock();
 
-	vector<DiGraph> scc = nuutila1_scc(g);
+	vector<int> scc = nuutila2_scc(g);
 
 	end = clock();
 
 	cout << "Components: " << scc.size() << ". Time: " << double(end - start) / CLOCKS_PER_SEC << " seconds" << endl << endl;
 
-	vector<DiGraph>::iterator it;
+	vector<int>::iterator it;
 	int i;
 
 	for(i = 0, it = scc.begin(); it != scc.end(); ++it, ++i) {
-		cout << "Component: " << i << endl;
-		print_graph(*it, cout);
+		cout << "Root Component: " << (i+1) << endl;
+//		print_graph(*it, cout);
+        cout << *it << endl;
 		cout << endl;
 	}
 
