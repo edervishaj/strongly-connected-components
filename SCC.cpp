@@ -59,6 +59,7 @@ DiGraph rand_graph(int n_vertices, float edge_prob, int seed){
 	return g;
 }
 
+/* Starting from another graph, we construct a random graph by adding non-parallel edges following Erdős-Rényi model */
 DiGraph g_rand_graph(int n_vertices, float edge_prob, int seed, DiGraph& g){
 	int current_vertices = boost::num_vertices(g);
 	int residual_vertices = n_vertices - current_vertices;
@@ -91,7 +92,7 @@ DiGraph g_rand_graph(int n_vertices, float edge_prob, int seed, DiGraph& g){
 }
 
 /* A directed cycle is a scc, so we constract a graph with n cycles */
-DiGraph n_rand_graph(const std::vector<int>& n_component, int n_vertices, float edge_prob, int seed){
+DiGraph n_rand_graph(const std::vector<int>& n_component, int n_vertices, float edge_prob, bool rand, int seed){
 	vertex_t v, v_prev, v_init;
 	int next_idx = -1;
 
@@ -111,7 +112,8 @@ DiGraph n_rand_graph(const std::vector<int>& n_component, int n_vertices, float 
 		boost::add_edge(v, v_init, g);
 	}
 
-	return g_rand_graph(n_vertices, edge_prob, seed, g);
+	if(rand) return g_rand_graph(n_vertices, edge_prob, seed, g);
+    else return g;
 }
 
 /* Main loop of Tarjan Algorithm */

@@ -24,7 +24,7 @@ int main(){
     vector<int> cc;
     cc.push_back(3);
     cc.push_back(4);
-    DiGraph g = n_rand_graph(cc, 20, 0.1, 150);
+    DiGraph g = n_rand_graph(cc, 20, 0.1, true, 150);
 
 //  DiGraph g;
 //	vertex_t _0 = add_vertex({0, false}, g);
