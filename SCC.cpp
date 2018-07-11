@@ -59,6 +59,61 @@ DiGraph rand_graph(int n_vertices, float edge_prob, int seed){
 	return g;
 }
 
+DiGraph g_rand_graph(int n_vertices, float edge_prob, int seed, DiGraph& g){
+	int current_vertices = boost::num_vertices(g);
+	int residual_vertices = n_vertices - current_vertices;
+	if(residual_vertices < 0)
+		return g;
+
+	// Initialize seed for reproducibility
+	std::mt19937 eng(seed);
+
+	// Initialize uniform distribution number generator
+	std::uniform_real_distribution<float> distribution(0.0, 1.0);
+
+	// Insert the vertices in the graph
+	for(int i = 0; i < residual_vertices; i++){
+		Vertex u = {i + current_vertices, false};
+		boost::add_vertex(u, g);
+	}
+
+	// For each pair of vertices, add edge with probability edge_prob
+	for(int i = 0; i < current_vertices + residual_vertices; i++){
+		vertex_t u = boost::vertex(i, g);
+		for(int j = 0; j < current_vertices + residual_vertices; j++){
+			vertex_t v = boost::vertex(j, g);
+			if(distribution(eng) < edge_prob && !boost::edge(u, v, g).second)
+				boost::add_edge(u, v, g);
+		}
+	}
+
+	return g;
+}
+
+/* A directed cycle is a scc, so we constract a graph with n cycles */
+DiGraph n_rand_graph(const std::vector<int>& n_component, int n_vertices, float edge_prob, int seed){
+	vertex_t v, v_prev, v_init;
+	int next_idx = -1;
+
+	DiGraph g;
+
+	for(int i = 0; i < n_component.size(); i++){
+		int n_vertices = n_component[i];
+
+		v_init = boost::add_vertex({++next_idx, false}, g);
+		v_prev = v_init;
+
+		for(int j = 1; j < n_vertices; j++){
+			v = boost::add_vertex({++next_idx, false}, g);
+			boost::add_edge(v_prev, v, g);
+			v_prev = v;
+		}
+		boost::add_edge(v, v_init, g);
+	}
+
+	return g_rand_graph(n_vertices, edge_prob, seed, g);
+}
+
 /* Main loop of Tarjan Algorithm */
 void visit(std::vector<DiGraph>& scc, std::stack<vertex_t>& stack, std::vector<bool>& inComponent, std::vector<int>& root, DiGraph& g, vertex_t v){
     // Auxiliary edge_iterator variables

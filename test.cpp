@@ -20,9 +20,13 @@ int main(){
 
 	clock_t start = clock();
 
-	DiGraph g = rand_graph(5, 0.5, 150);
+//	DiGraph g = rand_graph(20, 0.2, 151);
+    vector<int> cc;
+    cc.push_back(3);
+    cc.push_back(4);
+    DiGraph g = n_rand_graph(cc, 20, 0.1, 150);
 
-//    DiGraph g;
+//  DiGraph g;
 //	vertex_t _0 = add_vertex({0, false}, g);
 //	vertex_t _1 = add_vertex({1, false}, g);
 //	vertex_t _2 = add_vertex({2, false}, g);
@@ -41,19 +45,19 @@ int main(){
 
 	start = clock();
 
-	vector<int> scc = nuutila2_scc(g);
+	vector<DiGraph> scc = nuutila1_scc(g);
 
 	end = clock();
 
 	cout << "Components: " << scc.size() << ". Time: " << double(end - start) / CLOCKS_PER_SEC << " seconds" << endl << endl;
 
-	vector<int>::iterator it;
+	vector<DiGraph>::iterator it;
 	int i;
 
 	for(i = 0, it = scc.begin(); it != scc.end(); ++it, ++i) {
-		cout << "Root Component: " << (i+1) << endl;
-//		print_graph(*it, cout);
-        cout << *it << endl;
+		cout << "Component: " << (i+1) << endl;
+		print_graph(*it, cout);
+//        cout << *it << endl;
 		cout << endl;
 	}
 

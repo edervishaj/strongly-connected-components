@@ -11,7 +11,7 @@
 #include <boost/graph/adjacency_list.hpp>
 
 struct Vertex { int index; bool visited; };
-typedef boost::adjacency_list<boost::listS, boost::vecS, boost::directedS, Vertex> DiGraph;
+typedef boost::adjacency_list<boost::vecS, boost::vecS, boost::directedS, Vertex> DiGraph;
 typedef boost::graph_traits<DiGraph>::vertex_descriptor vertex_t;
 
 
@@ -20,10 +20,10 @@ typedef boost::graph_traits<DiGraph>::vertex_descriptor vertex_t;
 DiGraph rand_graph(int n_vertices, float edge_prob, int seed);
 
 /* Generates random graph G(n_vertices, edge_prob) through Erdős-Rényi model starting from g */
-DiGraph g_rand_graph(int n_vertices, float edge_prob, DiGraph& g);
+DiGraph g_rand_graph(int n_vertices, float edge_prob, int seed, DiGraph& g);
 
-/* Generates a random graph with n strongly connected components */
-DiGraph n_rand_graph(int n_components, const std::vector<int>& v_component);
+/* Generates a graph with n strongly connected components */
+DiGraph n_rand_graph(const std::vector<int>& n_component, int n_vertices, float edge_prob, int seed);
 
 /* Tarjan algorithm -- returns vector containing the SCCs */
 std::vector<DiGraph> tarjan_scc(DiGraph g);
