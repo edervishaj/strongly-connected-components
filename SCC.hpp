@@ -34,6 +34,13 @@ std::vector<DiGraph> nuutila1_scc(DiGraph g);
 /* Nuutila algorithm 2 -- returns vector containing the roots of SCCs */
 std::vector<int> nuutila2_scc(DiGraph g);
 
+/* Pearce algorithm 1 -- returns vector containing the component identifier of each vertex */
+std::vector<int> pearce1_scc(DiGraph g);
+
+/* Pearce algorithm 2 -- returns vector containing the component identifier of each vertex */
+std::vector<int> pearce2_scc(DiGraph g);
+
+
 /* Prints a DiGraph */
 void print_graph(const DiGraph& g, std::ostream& os);
 

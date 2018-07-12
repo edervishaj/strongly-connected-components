@@ -37,7 +37,36 @@ int main(){
 //	add_edge(_2, _3, g);
 //	add_edge(_3, _1, g);
 
-	clock_t end = clock();
+//    As seen in the interactive tool at http://www.timl.id.au/SCC
+//    DiGraph g;
+//    vertex_t _0 = add_vertex({0, false}, g);
+//    vertex_t _1 = add_vertex({1, false}, g);
+//    vertex_t _2 = add_vertex({2, false}, g);
+//    vertex_t _3 = add_vertex({3, false}, g);
+//    vertex_t _4 = add_vertex({4, false}, g);
+//    vertex_t _5 = add_vertex({5, false}, g);
+//    vertex_t _6 = add_vertex({6, false}, g);
+//    vertex_t _7 = add_vertex({7, false}, g);
+//    vertex_t _8 = add_vertex({8, false}, g);
+//    vertex_t _9 = add_vertex({9, false}, g);
+//
+//    add_edge(_0, _1, g);
+//    add_edge(_1, _2, g);
+//    add_edge(_2, _3, g);
+//    add_edge(_3, _1, g);
+//    add_edge(_2, _7, g);
+//    add_edge(_0, _4, g);
+//    add_edge(_4, _0, g);
+//    add_edge(_4, _5, g);
+//    add_edge(_5, _6, g);
+//    add_edge(_6, _4, g);
+//    add_edge(_4, _1, g);
+//    add_edge(_8, _9, g);
+//    add_edge(_9, _8, g);
+
+
+
+    clock_t end = clock();
 
 	print_graph(g, cout);
 
@@ -62,6 +91,15 @@ int main(){
 	}
 
 	f.close();
+
+
+    vector<int> rindex = pearce2_scc(g);
+
+    vector<int>::iterator it1;
+    cout << "rindex contains:";
+    for ( it1=rindex.begin() ; it1 < rindex.end(); it1++ )
+        cout << " " << *it1;
+    cout << endl;
 
 	return 0;
 }

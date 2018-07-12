@@ -324,3 +324,149 @@ std::vector<int> nuutila2_scc(DiGraph g){
 
 	return scc;
 }
+
+
+
+/* Main loop of Pearce's first improvement */
+void visitpearce1(std::vector<int>& rindex, std::vector<int>& S, std::vector<bool>& inComponent, DiGraph& g, vertex_t v, int& c, int& index_p){
+// Auxiliary edge_iterator variables
+    DiGraph::out_edge_iterator e, eend;
+
+    int root = true;
+
+    g[v].visited = true;
+
+    int v_idx = g[v].index;
+    rindex[v_idx] = index_p;
+    index_p++;
+
+
+// Go over all neighbors of v
+    for(boost::tie(e, eend) = out_edges(v, g); e != eend; ++e){
+        vertex_t w = boost::target(*e, g);
+        int w_idx = g[w].index;
+
+        if(!g[w].visited)
+            visitpearce1(rindex, S, inComponent, g, w, c, index_p);
+
+        if(!inComponent[w_idx] && (rindex[w_idx] < rindex[v_idx])) {
+            rindex[v_idx] = rindex[w_idx];
+            root = false;
+        }
+    }
+
+// Component identified, assign component identifiers to the corresponding vertices.
+    if (root) {
+        inComponent[v_idx] = true;
+
+        while (!S.empty() && (rindex[v_idx] <= rindex[S.back()])){
+            int w_idx = S.back();
+            S.pop_back();
+            rindex[w_idx] = c;
+            inComponent[w_idx] = true;
+        }
+        rindex[v_idx] = c;
+        c++;
+    } else {
+        S.push_back(v_idx);
+    }
+}
+
+std::vector<int> pearce1_scc(DiGraph g){
+// Number of vertices in g
+    int num_vertices = boost::num_vertices(g);
+
+// Vector of component identifiers to be returned by the algorithm.
+    std::vector<int> rindex(num_vertices);
+
+    int c = 0;
+    int index_p = 0;
+
+
+// DS used by Tarjan
+    std::vector<int> S;
+    std::vector<bool> inComponent(num_vertices, false);
+
+    DiGraph::vertex_iterator v, vend;
+
+// Go over all vertices
+    for(boost::tie(v, vend) = vertices(g); v != vend; ++v) {
+        if(!g[*v].visited) {
+
+            visitpearce1(rindex, S, inComponent, g, *v, c, index_p);
+        }
+    }
+
+    return rindex;
+}
+
+
+/* Main loop of Pearce's second improvement */
+void visitpearce2(std::vector<int>& rindex, std::vector<int>& S, DiGraph& g, vertex_t v, int& c, int& index_p){
+// Auxiliary edge_iterator variables
+    DiGraph::out_edge_iterator e, eend;
+
+    int root = true;
+
+    int v_idx = g[v].index;
+    rindex[v_idx] = index_p;
+    index_p++;
+
+// Go over all neighbors of v
+    for(boost::tie(e, eend) = out_edges(v, g); e != eend; ++e){
+        vertex_t w = boost::target(*e, g);
+        int w_idx = g[w].index;
+
+        if(rindex[w_idx]==0)
+            visitpearce2(rindex, S, g, w, c, index_p);
+
+        if(rindex[w_idx] < rindex[v_idx]) {
+            rindex[v_idx] = rindex[w_idx];
+            root = false;
+        }
+    }
+
+// Component identified, assign component identifiers to the corresponding vertices.
+    if (root) {
+        index_p--;
+        while (!S.empty() && (rindex[v_idx] <= rindex[S.back()])){
+            int w_idx = S.back();
+            S.pop_back();
+            rindex[w_idx] = c;
+            index_p--;
+        }
+        rindex[v_idx] = c;
+        c--;
+    } else {
+        S.push_back(v_idx);
+    }
+}
+
+std::vector<int> pearce2_scc(DiGraph g){
+//No need of .visited in vertex_t
+
+// Number of vertices in g
+    int num_vertices = boost::num_vertices(g);
+
+// Vector of component identifiers to be returned by the algorithm.
+    std::vector<int> rindex(num_vertices);
+    int c = num_vertices-1;
+    int index_p = 1;
+
+
+// DS used by Tarjan
+    std::vector<int> S;
+
+    DiGraph::vertex_iterator v, vend;
+
+// Go over all vertices
+    for(boost::tie(v, vend) = vertices(g); v != vend; ++v) {
+        int v_idx = g[*v].index;
+        if(rindex[v_idx]==0) {
+
+            visitpearce2(rindex, S, g, *v, c, index_p);
+        }
+    }
+
+    return rindex;
+}
