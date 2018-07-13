@@ -14,8 +14,7 @@ struct Vertex { int index; bool visited; };
 typedef boost::adjacency_list<boost::vecS, boost::vecS, boost::directedS, Vertex> DiGraph;
 typedef boost::graph_traits<DiGraph>::vertex_descriptor vertex_t;
 
-/* Creates vecor of components subgraphs SCC from the component identifiers given by Pearce's algorithms. */
-std::vector<DiGraph> create_scc (std::vector<int> component_ids, DiGraph g);
+
 
 /* Generates random graph G(n_vertices, edge_prob) through Erdős-Rényi model */
 DiGraph rand_graph(int n_vertices, float edge_prob, int seed);

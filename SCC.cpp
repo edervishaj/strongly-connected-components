@@ -30,56 +30,6 @@ void print_graph(const DiGraph& g, std::ostream& os=std::cout){
 	}
 }
 
-/* Creates vecor of components subgraphs SCC from the component identifiers given by Pearce's algorithms. */
-std::vector<DiGraph> create_scc (std::vector<int> component_ids, DiGraph g) {
-
-    std::set<int> components(component_ids.begin(), component_ids.end());
-
-    std::vector<DiGraph> scc(components.size());
-
-    std::vector<std::set<int>> component_vertices(components.size());
-
-    std::vector<vertex_t> vertices(component_ids.size());
-
-    //Go over each component
-    int comp_id = 0;
-    std::set<int>::iterator it_c;
-    for (it_c = components.begin(); it_c != components.end(); ++it_c, comp_id++){
-
-        //Insert vertices into respective component
-        for (int j = 0; j < component_ids.size(); j++) {
-
-            if (component_ids[j] == *it_c) {
-                Vertex u = {j, false};
-                vertices[j] = boost::add_vertex(u, scc[comp_id]);
-                component_vertices[comp_id].insert(j);
-            }
-        }
-
-        //Go over vertices of a component
-        std::set<int>::iterator it;
-        for (it = component_vertices[comp_id].begin(); it != component_vertices[comp_id].end(); ++it){
-
-            int u_idx = *it;
-            vertex_t u_g = boost::vertex(u_idx, g);
-            vertex_t u = vertices[u_idx];
-
-            //Copy the edges of the main graph whose both vertices are in the same component
-            DiGraph::out_edge_iterator e, eend;
-            for(boost::tie(e, eend) = out_edges(u_g, g); e != eend; ++e) {
-                vertex_t w_g = boost::target(*e, g);
-                int w_idx = g[w_g].index;
-
-                if (component_vertices[comp_id].find(w_idx) != component_vertices[comp_id].end()) {
-                    vertex_t w = vertices[w_idx];
-                    boost::add_edge(u, w, scc[comp_id]);
-                }
-            }
-        }
-    }
-    return scc;
-}
-
 DiGraph rand_graph(int n_vertices, float edge_prob, int seed){
 	// Initialize seed for reproducibility
 	std::mt19937 eng(seed);
@@ -99,7 +49,7 @@ DiGraph rand_graph(int n_vertices, float edge_prob, int seed){
 	// For each pair of vertices, add edge with probability edge_prob
 	for(int i = 0; i < n_vertices; i++){
 		vertex_t u = boost::vertex(i, g);
-        for(int j = 0; j < n_vertices; j++){
+		for(int j = 0; j < n_vertices; j++){
 			vertex_t v = boost::vertex(j, g);
 			if(distribution(eng) < edge_prob)
 				boost::add_edge(u, v, g);
@@ -131,7 +81,7 @@ DiGraph g_rand_graph(int n_vertices, float edge_prob, int seed, DiGraph& g){
 	// For each pair of vertices, add edge with probability edge_prob
 	for(int i = 0; i < current_vertices + residual_vertices; i++){
 		vertex_t u = boost::vertex(i, g);
-        for(int j = 0; j < current_vertices + residual_vertices; j++){
+		for(int j = 0; j < current_vertices + residual_vertices; j++){
 			vertex_t v = boost::vertex(j, g);
 			if(distribution(eng) < edge_prob && !boost::edge(u, v, g).second)
 				boost::add_edge(u, v, g);

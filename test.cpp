@@ -24,46 +24,45 @@ int main(){
     vector<int> cc;
     cc.push_back(3);
     cc.push_back(4);
-//    DiGraph g = n_rand_graph(cc, 30, 0.08, true, 150);
+    DiGraph g = n_rand_graph(cc, 20, 0.1, true, 150);
 
 //  DiGraph g;
 //	vertex_t _0 = add_vertex({0, false}, g);
 //	vertex_t _1 = add_vertex({1, false}, g);
 //	vertex_t _2 = add_vertex({2, false}, g);
 //	vertex_t _3 = add_vertex({3, false}, g);
-
-
+//
 //	//add_edge(_0, _1, g);
 //	add_edge(_1, _2, g);
 //	add_edge(_2, _3, g);
 //	add_edge(_3, _1, g);
 
 //    As seen in the interactive tool at http://www.timl.id.au/SCC
-    DiGraph g;
-    vertex_t _0 = add_vertex({0, false}, g);
-    vertex_t _1 = add_vertex({1, false}, g);
-    vertex_t _2 = add_vertex({2, false}, g);
-    vertex_t _3 = add_vertex({3, false}, g);
-    vertex_t _4 = add_vertex({4, false}, g);
-    vertex_t _5 = add_vertex({5, false}, g);
-    vertex_t _6 = add_vertex({6, false}, g);
-    vertex_t _7 = add_vertex({7, false}, g);
-    vertex_t _8 = add_vertex({8, false}, g);
-    vertex_t _9 = add_vertex({9, false}, g);
-
-    add_edge(_0, _1, g);
-    add_edge(_1, _2, g);
-    add_edge(_2, _3, g);
-    add_edge(_3, _1, g);
-    add_edge(_2, _7, g);
-    add_edge(_0, _4, g);
-    add_edge(_4, _0, g);
-    add_edge(_4, _5, g);
-    add_edge(_5, _6, g);
-    add_edge(_6, _4, g);
-    add_edge(_4, _1, g);
-    add_edge(_8, _9, g);
-    add_edge(_9, _8, g);
+//    DiGraph g;
+//    vertex_t _0 = add_vertex({0, false}, g);
+//    vertex_t _1 = add_vertex({1, false}, g);
+//    vertex_t _2 = add_vertex({2, false}, g);
+//    vertex_t _3 = add_vertex({3, false}, g);
+//    vertex_t _4 = add_vertex({4, false}, g);
+//    vertex_t _5 = add_vertex({5, false}, g);
+//    vertex_t _6 = add_vertex({6, false}, g);
+//    vertex_t _7 = add_vertex({7, false}, g);
+//    vertex_t _8 = add_vertex({8, false}, g);
+//    vertex_t _9 = add_vertex({9, false}, g);
+//
+//    add_edge(_0, _1, g);
+//    add_edge(_1, _2, g);
+//    add_edge(_2, _3, g);
+//    add_edge(_3, _1, g);
+//    add_edge(_2, _7, g);
+//    add_edge(_0, _4, g);
+//    add_edge(_4, _0, g);
+//    add_edge(_4, _5, g);
+//    add_edge(_5, _6, g);
+//    add_edge(_6, _4, g);
+//    add_edge(_4, _1, g);
+//    add_edge(_8, _9, g);
+//    add_edge(_9, _8, g);
 
 
 
@@ -75,11 +74,9 @@ int main(){
 
 	start = clock();
 
-	vector<DiGraph> scc = create_scc( pearce2_scc(g), g);
-//    vector<DiGraph> scc = tarjan_scc(g);
+	vector<DiGraph> scc = nuutila1_scc(g);
 
-
-    end = clock();
+	end = clock();
 
 	cout << "Components: " << scc.size() << ". Time: " << double(end - start) / CLOCKS_PER_SEC << " seconds" << endl << endl;
 
@@ -89,25 +86,20 @@ int main(){
 	for(i = 0, it = scc.begin(); it != scc.end(); ++it, ++i) {
 		cout << "Component: " << (i+1) << endl;
 		print_graph(*it, cout);
+//        cout << *it << endl;
 		cout << endl;
 	}
 
 	f.close();
 
-//
-//
-//    vector<int>::iterator it1;
-//    cout << "rindex contains:";
-//    for ( it1=rindex.begin() ; it1 < rindex.end(); it1++ )
-//        cout << " " << *it1;
-//    cout << endl;
-//
-//
-//    for (int const& person : s)
-//    {
-//        std::cout << person << ' ';
-//    }
 
+    vector<int> rindex = pearce2_scc(g);
+
+    vector<int>::iterator it1;
+    cout << "rindex contains:";
+    for ( it1=rindex.begin() ; it1 < rindex.end(); it1++ )
+        cout << " " << *it1;
+    cout << endl;
 
 	return 0;
 }
