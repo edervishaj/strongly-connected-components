@@ -148,6 +148,7 @@ DiGraph n_rand_graph(const std::vector<int>& n_component, int n_vertices, float 
     // Initialize seed for reproducibility
     std::mt19937 eng(seed);
 
+    // Auxiliary variables
 	vertex_t v, v_prev, v_init;
 	int next_idx = -1;
 	int r_vertices;
@@ -155,20 +156,25 @@ DiGraph n_rand_graph(const std::vector<int>& n_component, int n_vertices, float 
 	DiGraph g;
 
 	for(int i = 0; i < n_component.size(); i++){
+	    // Keep track of the first added vertex of the component
 		v_init = boost::add_vertex({++next_idx, false}, g);
 		v_prev = v_init;
 
+		// If random_components is set, we sample different number of vertices per component
 		if(rand_components) {
             std::uniform_int_distribution<int> distribution(1, 10);
             r_vertices = distribution(eng);
         }
-        else r_vertices = n_component[i];
+        else r_vertices = n_component[i];   // otherwise use provided number of vertices per component
 
+        // Add the vertices keeping track of the previous added vertex so to connect them together
 		for(int j = 1; j < r_vertices; j++){
 			v = boost::add_vertex({++next_idx, false}, g);
 			boost::add_edge(v_prev, v, g);
 			v_prev = v;
 		}
+
+		// Close the cycle to create the component
 		boost::add_edge(v, v_init, g);
 	}
 
