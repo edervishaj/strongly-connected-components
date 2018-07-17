@@ -112,6 +112,7 @@ DiGraph rand_graph(int n_vertices, float edge_prob, int seed){
 
 /* Starting from another graph, we construct a random graph by adding non-parallel edges following Erdős-Rényi model */
 DiGraph g_rand_graph(int n_vertices, float edge_prob, int seed, DiGraph& g){
+    // If n_vertices is less than the number of vertices g already has, then return g
 	int current_vertices = boost::num_vertices(g);
 	int residual_vertices = n_vertices - current_vertices;
 	if(residual_vertices < 0)
@@ -129,7 +130,7 @@ DiGraph g_rand_graph(int n_vertices, float edge_prob, int seed, DiGraph& g){
 		boost::add_vertex(u, g);
 	}
 
-	// For each pair of vertices, add edge with probability edge_prob
+	// For each pair of vertices, add edge with probability edge_prob if it does not exist
 	for(int i = 0; i < current_vertices + residual_vertices; i++){
 		vertex_t u = boost::vertex(i, g);
 		for(int j = 0; j < current_vertices + residual_vertices; j++){
@@ -143,19 +144,27 @@ DiGraph g_rand_graph(int n_vertices, float edge_prob, int seed, DiGraph& g){
 }
 
 /* A directed cycle is a scc, so we constract a graph with n cycles */
-DiGraph n_rand_graph(const std::vector<int>& n_component, int n_vertices, float edge_prob, bool rand, int seed){
+DiGraph n_rand_graph(const std::vector<int>& n_component, int n_vertices, float edge_prob, bool rand_components, bool rand_graph, int seed){
+    // Initialize seed for reproducibility
+    std::mt19937 eng(seed);
+
 	vertex_t v, v_prev, v_init;
 	int next_idx = -1;
+	int r_vertices;
 
 	DiGraph g;
 
 	for(int i = 0; i < n_component.size(); i++){
-		int n_vertices = n_component[i];
-
 		v_init = boost::add_vertex({++next_idx, false}, g);
 		v_prev = v_init;
 
-		for(int j = 1; j < n_vertices; j++){
+		if(rand_components) {
+            std::uniform_int_distribution<int> distribution(1, 10);
+            r_vertices = distribution(eng);
+        }
+        else r_vertices = n_component[i];
+
+		for(int j = 1; j < r_vertices; j++){
 			v = boost::add_vertex({++next_idx, false}, g);
 			boost::add_edge(v_prev, v, g);
 			v_prev = v;
@@ -163,8 +172,65 @@ DiGraph n_rand_graph(const std::vector<int>& n_component, int n_vertices, float 
 		boost::add_edge(v, v_init, g);
 	}
 
-	if(rand) return g_rand_graph(n_vertices, edge_prob, seed, g);
+	// Call g_rand_graph if you want to randomize starting from the n_components
+	if(rand_graph) return g_rand_graph(n_vertices, edge_prob, seed, g);
     else return g;
+}
+
+/* Considers the connected components as single vertices. Keep a n_vertices x n_vertices matrix to select edges */
+DiGraph n_rand_graph2(int n_vertices, float edge_prob, int seed, DiGraph& g, int n_components){
+    int current_vertices = boost::num_vertices(g);
+    int residual_vertices = n_vertices - current_vertices;
+    if(residual_vertices < 0)
+        return g;
+
+    DiGraph tmp_g;
+
+    int new_vertices = n_vertices - n_components;
+
+    int m[new_vertices][new_vertices] = {{0}};
+
+    // Add component vertices; set to 1 their edges
+    for(int i = 0; i < n_components; i++) {
+        boost::add_vertex({i, false}, tmp_g);
+        for(int j = i; j < n_components; j++) {
+            m[i][j] = 1;
+            m[j][i] = 1;
+        }
+    }
+
+    // Initialize seed for reproducibility
+    std::mt19937 eng(seed);
+
+    // Initialize uniform distribution number generator
+    std::uniform_real_distribution<float> distribution(0.0, 1.0);
+
+    // Insert the vertices in the graph
+    for(int i = 0; i < new_vertices; i++){
+        Vertex u = {i + n_components, false};
+        boost::add_vertex(u, tmp_g);
+    }
+
+    // For each pair of vertices, add edge with probability edge_prob
+    for(int i = 0; i < n_vertices; i++){
+        vertex_t u = boost::vertex(i, tmp_g);
+        int u_idx = g[u].index;
+        for(int j = 0; j < n_vertices; j++){
+            vertex_t v = boost::vertex(j, tmp_g);
+            int v_idx = g[v].index;
+            if(m[u_idx][v_idx] == 0 && distribution(eng) < edge_prob) {
+                // If v_idx is a component ==> set all
+                if(v_idx < n_components)
+
+                // If u_idx is a component
+                if(u_idx < n_components)
+
+                boost::add_edge(u, v, g);
+            }
+        }
+    }
+
+    return tmp_g;
 }
 
 /* Main loop of Tarjan Algorithm */
