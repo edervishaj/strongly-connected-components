@@ -20,6 +20,9 @@ std::vector<DiGraph> create_scc (std::vector<int> component_ids, DiGraph g);
 /* Generates random graph G(n_vertices, edge_prob) through Erdős-Rényi model */
 DiGraph rand_graph(int n_vertices, float edge_prob, int seed);
 
+/* Generates random graph G(n_vertices, m_edges) */
+DiGraph rand_graph(int n_vertices, int m_edges, int seed);
+
 /* Generates random graph G(n_vertices, edge_prob) through Erdős-Rényi model starting from g */
 DiGraph g_rand_graph(int n_vertices, float edge_prob, int seed, DiGraph& g);
 

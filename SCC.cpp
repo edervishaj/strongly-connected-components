@@ -80,7 +80,6 @@ std::vector<DiGraph> create_scc (std::vector<int> component_ids, DiGraph g) {
     return scc;
 }
 
-
 DiGraph rand_graph(int n_vertices, float edge_prob, int seed){
 	// Initialize seed for reproducibility
 	std::mt19937 eng(seed);
@@ -108,6 +107,43 @@ DiGraph rand_graph(int n_vertices, float edge_prob, int seed){
 	}
 
 	return g;
+}
+
+DiGraph rand_graph(int n_vertices, int m_edges, int seed){
+    // Initialize seed for reproducibility
+    std::mt19937 eng(seed);
+
+    // Initialize uniform distribution number generator
+    std::uniform_int_distribution<int> distribution(0, m_edges);
+
+    // Initialize DiGraph object
+    DiGraph g;
+
+    // Insert the vertices in the graph
+    for(int i = 0; i < n_vertices; i++){
+        Vertex u = {i, false};
+        boost::add_vertex(u, g);
+    }
+
+    int inserted_edges = 0;
+
+    // For each pair of vertices, add edge with probability edge_prob
+    while(inserted_edges < m_edges){
+        // Sample source & target vertices
+        int u_idx = distribution(eng);
+        int v_idx = distribution(eng);
+
+        vertex_t u = boost::vertex(u_idx, g);
+        vertex_t v = boost::vertex(v_idx, g);
+
+        // If the edge is not already in the graph -- do not allow parallel edges
+        if(!boost::edge(u, v, g).second){
+            boost::add_edge(u, v, g);
+            inserted_edges++;
+        }
+    }
+
+    return g;
 }
 
 /* Starting from another graph, we construct a random graph by adding non-parallel edges following Erdős-Rényi model */

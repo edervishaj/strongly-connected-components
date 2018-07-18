@@ -20,11 +20,11 @@ int main(){
 
 	clock_t start = clock();
 
-//	DiGraph g = rand_graph(20, 0.2, 151);
-    vector<int> cc;
-    cc.push_back(3);
-    cc.push_back(4);
-    DiGraph g = n_rand_graph(cc, 20, 0.1, false, false, 42);
+	DiGraph g = rand_graph(20, 20, 151);
+//    vector<int> cc;
+//    cc.push_back(3);
+//    cc.push_back(4);
+//    DiGraph g = n_rand_graph(cc, 20, 0.1, false, false, 42);
 
 //  DiGraph g;
 //	vertex_t _0 = add_vertex({0, false}, g);
