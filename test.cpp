@@ -1,103 +1,57 @@
-/*
- * test.cpp
- *
- * Author: Ervin Dervishaj
- * Email: vindervishaj@gmail.com
- */
-
-
-#include <ctime>
 #include <iostream>
-#include <fstream>
+#include <string>
+#include <vector>
 #include "SCC.hpp"
 using namespace std;
 
-int main1(){
+void print(const DiGraph& g, vector<DiGraph>& scc){
+    // Print out the graph
+    print_graph(g, cout);
 
-//	fstream f;
-//
-//	f.open("../graph.txt", ios_base::out);
+    cout << "Components: " << scc.size() << endl << endl;
 
-	//clock_t start = clock();
+    // Print found components
+    vector<DiGraph>::iterator it;
+    int i;
 
-	DiGraph g = rand_graph(2000, 20, 151);
-
-//    vector<int> cc;
-//    cc.push_back(3);
-//    cc.push_back(4);
-//    DiGraph g = n_rand_graph(cc, 20, 0.1, false, false, 42);
-
-//  DiGraph g;
-//	vertex_t _0 = add_vertex({0, false}, g);
-//	vertex_t _1 = add_vertex({1, false}, g);
-//	vertex_t _2 = add_vertex({2, false}, g);
-//	vertex_t _3 = add_vertex({3, false}, g);
-//
-//	//add_edge(_0, _1, g);
-//	add_edge(_1, _2, g);
-//	add_edge(_2, _3, g);
-//	add_edge(_3, _1, g);
-
-//    As seen in the interactive tool at http://www.timl.id.au/SCC
-//    DiGraph g;
-//    vertex_t _0 = add_vertex({0, false}, g);
-//    vertex_t _1 = add_vertex({1, false}, g);
-//    vertex_t _2 = add_vertex({2, false}, g);
-//    vertex_t _3 = add_vertex({3, false}, g);
-//    vertex_t _4 = add_vertex({4, false}, g);
-//    vertex_t _5 = add_vertex({5, false}, g);
-//    vertex_t _6 = add_vertex({6, false}, g);
-//    vertex_t _7 = add_vertex({7, false}, g);
-//    vertex_t _8 = add_vertex({8, false}, g);
-//    vertex_t _9 = add_vertex({9, false}, g);
-//
-//    add_edge(_0, _1, g);
-//    add_edge(_1, _2, g);
-//    add_edge(_2, _3, g);
-//    add_edge(_3, _1, g);
-//    add_edge(_2, _7, g);
-//    add_edge(_0, _4, g);
-//    add_edge(_4, _0, g);
-//    add_edge(_4, _5, g);
-//    add_edge(_5, _6, g);
-//    add_edge(_6, _4, g);
-//    add_edge(_4, _1, g);
-//    add_edge(_8, _9, g);
-//    add_edge(_9, _8, g);
-
-
-    // clock_t end = clock();
-
-    //print_graph(g, cout);
-
-    //cout << "Time to create random graph: " << double(end - start) / CLOCKS_PER_SEC << " seconds" << endl << endl;
-
-    // start = clock();
-
-//	vector<DiGraph> scc = create_scc( pearce2_scc(g), g);
-	vector<DiGraph> scc = nuutila1_scc(g);
-
-//    vector<int> comp_ids = pearce1_scc(g);
-//    std::set<int> components(comp_ids.begin(), comp_ids.end());
-//    cout << "Components with Pearce: " << components.size() << endl << endl;
-
-	//end = clock();
-
-//	cout << "Components: " << scc.size() << endl << endl;
-
-//	cout << "Components: " << scc.size() << ". Time: " << double(end - start) / CLOCKS_PER_SEC << " seconds" << endl << endl;
-
-//	vector<int>::iterator it;
-//	int i;
-//
-//	for(i = 0, it = scc.begin(); it != scc.end(); ++it, ++i) {
-//		cout << "Component: " << (i+1) << endl;
-//		//print_graph(*it, cout);
-//        cout << *it << endl;
-//		cout << endl;
-//	}
-
-//	f.close();
-
-	return 0;
+    for(i = 1, it = scc.begin(); it != scc.end(); ++it, ++i) {
+        cout << "Component: " << i << endl;
+        print_graph(*it, cout);
+        cout << endl << endl;
+    }
 }
+
+void test_tarjan(const DiGraph& g, bool verbose){
+    vector<DiGraph> scc = tarjan_scc(g);
+    if(verbose) print(g, scc);
+}
+
+void test_nuutila1(const DiGraph& g, bool verbose){
+    vector<DiGraph> scc = nuutila1_scc(g);
+    if(verbose) print(g, scc);
+}
+
+void test_nuutila2(const DiGraph& g, bool verbose){
+    vector<int> scc = nuutila2_scc(g);
+    if(verbose) cout << "Components: " << scc.size() << endl << endl;
+}
+
+void test_pearce1(const DiGraph& g, bool verbose){
+    vector<int> scc = pearce1_scc(g);
+    std::set<int> components(scc.begin(), scc.end());
+    if(verbose) cout << "Components: " << components.size() << endl << endl;
+}
+
+void test_pearce2(const DiGraph& g, bool verbose){
+    vector<int> scc = pearce2_scc(g);
+    std::set<int> components(scc.begin(), scc.end());
+    if(verbose) cout << "Components: " << components.size() << endl << endl;
+}
+
+int main(int argc, char** argv){
+    // Generated random graph
+    DiGraph g = rand_graph(20, 20, 151);
+
+    test_pearce2(g, true);
+}
+
