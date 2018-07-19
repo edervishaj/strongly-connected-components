@@ -337,7 +337,7 @@ std::vector<DiGraph> nuutila1_scc(DiGraph g){
 	// Vector of SCC to be returned by the algorithm
 	std::vector<DiGraph> scc;
 
-	// DS used by Tarjan
+	// DS used by nuutila1
 	std::stack<vertex_t> stack;
 	std::vector<bool> inComponent(num_vertices, false);
 	std::vector<int> root(num_vertices, num_vertices + 1);
@@ -406,7 +406,7 @@ std::vector<int> nuutila2_scc(DiGraph g){
 	// Vector of SCC to be returned by the algorithm
 	std::vector<int> scc;
 
-	// DS used by Tarjan
+	// DS used by nuutila2
 	std::vector<int> stack;
 	std::vector<bool> inComponent(num_vertices, false);
 	std::vector<int> root(num_vertices, num_vertices + 1);
@@ -475,7 +475,7 @@ void visitpearce1(std::vector<int>& rindex, std::vector<int>& S, std::vector<boo
     }
 }
 
-std::vector<int> pearce1_scc(DiGraph g){
+std::vector<int> nuutila2_scc(DiGraph g){
 // Number of vertices in g
     int num_vertices = boost::num_vertices(g);
 
@@ -486,7 +486,7 @@ std::vector<int> pearce1_scc(DiGraph g){
     int index_p = 0;
 
 
-// DS used by Tarjan
+// DS used by nuutila2
     std::vector<int> S;
     std::vector<bool> inComponent(num_vertices, false);
 
@@ -557,7 +557,7 @@ std::vector<int> pearce2_scc(DiGraph g){
     int index_p = 1;
 
 
-// DS used by Tarjan
+// DS used by pearce2
     std::vector<int> S;
 
     DiGraph::vertex_iterator v, vend;
