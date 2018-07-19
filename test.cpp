@@ -20,7 +20,7 @@ int main(){
 
 	clock_t start = clock();
 
-	DiGraph g = rand_graph(20, 20, 151);
+	DiGraph g = rand_graph(20, (float)0.2, 151);
 //    vector<int> cc;
 //    cc.push_back(3);
 //    cc.push_back(4);
@@ -73,21 +73,26 @@ int main(){
 
 	start = clock();
 
-//	vector<DiGraph> scc = create_scc( pearce2_scc(g), g);
-	vector<DiGraph> scc = nuutila1_scc(g);
+	vector<DiGraph> scc = tarjan_scc(g);
 
 	end = clock();
 
 	cout << "Components: " << scc.size() << ". Time: " << double(end - start) / CLOCKS_PER_SEC << " seconds" << endl << endl;
 
-	vector<DiGraph>::iterator it;
-	int i;
 
-	for(i = 0, it = scc.begin(); it != scc.end(); ++it, ++i) {
-		cout << "Component: " << (i+1) << endl;
-		print_graph(*it, cout);
-		cout << endl;
-	}
+//	vector<int> comp_ids = pearce1_scc(g);
+//	std::set<int> components(comp_ids.begin(), comp_ids.end());
+//	cout << "Components: " << components.size() << ". Time: " << double(end - start) / CLOCKS_PER_SEC << " seconds" << endl << endl;
+
+
+//	vector<DiGraph>::iterator it;
+//	int i;
+//
+//	for(i = 0, it = scc.begin(); it != scc.end(); ++it, ++i) {
+//		cout << "Component: " << (i+1) << endl;
+//		print_graph(*it, cout);
+//		cout << endl;
+//	}
 
 	f.close();
 

@@ -220,60 +220,60 @@ DiGraph n_rand_graph(const std::vector<int>& n_component, int n_vertices, float 
 }
 
 /* Considers the connected components as single vertices. Keep a n_vertices x n_vertices matrix to select edges */
-DiGraph n_rand_graph2(int n_vertices, float edge_prob, int seed, DiGraph& g, int n_components){
-    int current_vertices = boost::num_vertices(g);
-    int residual_vertices = n_vertices - current_vertices;
-    if(residual_vertices < 0)
-        return g;
-
-    DiGraph tmp_g;
-
-    int new_vertices = n_vertices - n_components;
-
-    int m[new_vertices][new_vertices] = {{0}};
-
-    // Add component vertices; set to 1 their edges
-    for(int i = 0; i < n_components; i++) {
-        boost::add_vertex({i, false}, tmp_g);
-        for(int j = i; j < n_components; j++) {
-            m[i][j] = 1;
-            m[j][i] = 1;
-        }
-    }
-
-    // Initialize seed for reproducibility
-    std::mt19937 eng(seed);
-
-    // Initialize uniform distribution number generator
-    std::uniform_real_distribution<float> distribution(0.0, 1.0);
-
-    // Insert the vertices in the graph
-    for(int i = 0; i < new_vertices; i++){
-        Vertex u = {i + n_components, false};
-        boost::add_vertex(u, tmp_g);
-    }
-
-    // For each pair of vertices, add edge with probability edge_prob
-    for(int i = 0; i < n_vertices; i++){
-        vertex_t u = boost::vertex(i, tmp_g);
-        int u_idx = g[u].index;
-        for(int j = 0; j < n_vertices; j++){
-            vertex_t v = boost::vertex(j, tmp_g);
-            int v_idx = g[v].index;
-            if(m[u_idx][v_idx] == 0 && distribution(eng) < edge_prob) {
-                // If v_idx is a component ==> set all
-                if(v_idx < n_components)
-
-                // If u_idx is a component
-                if(u_idx < n_components)
-
-                boost::add_edge(u, v, g);
-            }
-        }
-    }
-
-    return tmp_g;
-}
+//DiGraph n_rand_graph2(int n_vertices, float edge_prob, int seed, DiGraph& g, int n_components){
+//    int current_vertices = boost::num_vertices(g);
+//    int residual_vertices = n_vertices - current_vertices;
+//    if(residual_vertices < 0)
+//        return g;
+//
+//    DiGraph tmp_g;
+//
+//    int new_vertices = n_vertices - n_components;
+//
+//    int m[new_vertices][new_vertices] = {{0}};
+//
+//    // Add component vertices; set to 1 their edges
+//    for(int i = 0; i < n_components; i++) {
+//        boost::add_vertex({i, false}, tmp_g);
+//        for(int j = i; j < n_components; j++) {
+//            m[i][j] = 1;
+//            m[j][i] = 1;
+//        }
+//    }
+//
+//    // Initialize seed for reproducibility
+//    std::mt19937 eng(seed);
+//
+//    // Initialize uniform distribution number generator
+//    std::uniform_real_distribution<float> distribution(0.0, 1.0);
+//
+//    // Insert the vertices in the graph
+//    for(int i = 0; i < new_vertices; i++){
+//        Vertex u = {i + n_components, false};
+//        boost::add_vertex(u, tmp_g);
+//    }
+//
+//    // For each pair of vertices, add edge with probability edge_prob
+//    for(int i = 0; i < n_vertices; i++){
+//        vertex_t u = boost::vertex(i, tmp_g);
+//        int u_idx = g[u].index;
+//        for(int j = 0; j < n_vertices; j++){
+//            vertex_t v = boost::vertex(j, tmp_g);
+//            int v_idx = g[v].index;
+//            if(m[u_idx][v_idx] == 0 && distribution(eng) < edge_prob) {
+//                // If v_idx is a component ==> set all
+//                if(v_idx < n_components)
+//
+//                // If u_idx is a component
+//                if(u_idx < n_components)
+//
+//                boost::add_edge(u, v, g);
+//            }
+//        }
+//    }
+//
+//    return tmp_g;
+//}
 
 /* Main loop of Tarjan Algorithm */
 void visit(std::vector<DiGraph>& scc, std::stack<vertex_t>& stack, std::vector<bool>& inComponent, std::vector<int>& root, DiGraph& g, vertex_t v){
