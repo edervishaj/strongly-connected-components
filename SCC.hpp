@@ -29,9 +29,6 @@ DiGraph g_rand_graph(int n_vertices, float edge_prob, int seed, DiGraph& g);
 /* Generates a graph with n strongly connected components */
 DiGraph n_rand_graph(const std::vector<int>& n_component, int n_vertices, float edge_prob, bool rand_components, bool rand_graph, int seed);
 
-/* Implements Bipartite idead -- DO NOT USE! */
-DiGraph n_rand_graph2(int n_vertices, float edge_prob, int seed, DiGraph& g, int n_components);
-
 /* Tarjan algorithm -- returns vector containing the SCCs */
 std::vector<DiGraph> tarjan_scc(DiGraph g);
 

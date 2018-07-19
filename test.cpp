@@ -12,15 +12,16 @@
 #include "SCC.hpp"
 using namespace std;
 
-int main(){
+int main1(){
 
-	fstream f;
+//	fstream f;
+//
+//	f.open("../graph.txt", ios_base::out);
 
-	f.open("../graph.txt", ios_base::out);
+	//clock_t start = clock();
 
-	clock_t start = clock();
+	DiGraph g = rand_graph(2000, 20, 151);
 
-	DiGraph g = rand_graph(20, 20, 151);
 //    vector<int> cc;
 //    cc.push_back(3);
 //    cc.push_back(4);
@@ -65,31 +66,38 @@ int main(){
 //    add_edge(_9, _8, g);
 
 
-    clock_t end = clock();
+    // clock_t end = clock();
 
-	print_graph(g, cout);
+    //print_graph(g, cout);
 
-	cout << "Time to create random graph: " << double(end - start) / CLOCKS_PER_SEC << " seconds" << endl << endl;
+    //cout << "Time to create random graph: " << double(end - start) / CLOCKS_PER_SEC << " seconds" << endl << endl;
 
-	start = clock();
+    // start = clock();
 
 //	vector<DiGraph> scc = create_scc( pearce2_scc(g), g);
 	vector<DiGraph> scc = nuutila1_scc(g);
 
-	end = clock();
+//    vector<int> comp_ids = pearce1_scc(g);
+//    std::set<int> components(comp_ids.begin(), comp_ids.end());
+//    cout << "Components with Pearce: " << components.size() << endl << endl;
 
-	cout << "Components: " << scc.size() << ". Time: " << double(end - start) / CLOCKS_PER_SEC << " seconds" << endl << endl;
+	//end = clock();
 
-	vector<DiGraph>::iterator it;
-	int i;
+//	cout << "Components: " << scc.size() << endl << endl;
 
-	for(i = 0, it = scc.begin(); it != scc.end(); ++it, ++i) {
-		cout << "Component: " << (i+1) << endl;
-		print_graph(*it, cout);
-		cout << endl;
-	}
+//	cout << "Components: " << scc.size() << ". Time: " << double(end - start) / CLOCKS_PER_SEC << " seconds" << endl << endl;
 
-	f.close();
+//	vector<int>::iterator it;
+//	int i;
+//
+//	for(i = 0, it = scc.begin(); it != scc.end(); ++it, ++i) {
+//		cout << "Component: " << (i+1) << endl;
+//		//print_graph(*it, cout);
+//        cout << *it << endl;
+//		cout << endl;
+//	}
+
+//	f.close();
 
 	return 0;
 }

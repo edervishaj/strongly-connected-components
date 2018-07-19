@@ -9,4 +9,4 @@ add_executable(strongly_connected_components
         README.md
         SCC.cpp
         SCC.hpp
-        test.cpp)
+        test.cpp test_tarjan_nuutila.cpp)
