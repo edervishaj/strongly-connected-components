@@ -389,7 +389,7 @@ void visit2(std::vector<int>& scc, std::vector<int>& stack, std::vector<bool>& i
             }
         } else {
             inComponent[v_idx] = true;
-			scc.push_back(v_idx);
+	    //scc.push_back(v_idx);
         }
     } else {
         if(std::find(stack.begin(), stack.end(), root[v_idx]) == stack.end()) {
