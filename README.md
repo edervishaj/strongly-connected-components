@@ -1,6 +1,6 @@
 # Identifying Strongly Connected Components
 
-Link to the presentation in [Google Drive] (https://docs.google.com/presentation/d/1A-0Lla9cnaPZZLTLoLQ37v8f7kyeFIkkNRVAkbhhtSY/edit?usp=sharing)
+Link to the presentation in [Google Drive](https://docs.google.com/presentation/d/1A-0Lla9cnaPZZLTLoLQ37v8f7kyeFIkkNRVAkbhhtSY/edit?usp=sharing).
 
 This repository contains implementations for 3 different algorithms used to identify strongly connected components in directed graphs:
 
